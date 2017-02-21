@@ -6,6 +6,8 @@
 package netbeanspost;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
@@ -35,12 +37,7 @@ public class GUI extends JPanel {
   public GUI() {
       
     // Placeholder values, will need to call methods to get these.
-    orders = "giraffe\t\t\t1\t10.00\t10.00\n" +
-             "giraffe\t\t\t1\t10.00\t10.00\n" +
-             "giraffe\t\t\t1\t10.00\t10.00\n" +
-             "giraffe\t\t\t1\t10.00\t10.00\n" +
-             "giraffe\t\t\t1\t10.00\t10.00\n" +
-             "giraffe\t\t\t1\t10.00\t10.00\n";
+    orders = "";
     orderTotal = 0;
     upcs = new Vector<String> (Arrays.asList("UPC001", "UPC002", "UPC003", "UPC004", "UPC005"));
     paymentTypes = new Vector<String> (Arrays.asList("Cash", "Debit", "Mastercard", "Visa", "Amex"));
@@ -49,7 +46,9 @@ public class GUI extends JPanel {
     
     // Buttons
     addItem = new JButton("Add item");
+    addItem.addActionListener(new AddItemListener());
     pay = new JButton("Pay");
+    pay.addActionListener(new PayListener());
     
     // Text Fields
     customerName = new JTextField("Enter your name");
@@ -57,12 +56,12 @@ public class GUI extends JPanel {
     payAmount = new JTextField("000.00");
     
     // Dropdowns
-    JComboBox<String> upcSelect = new JComboBox<String>(upcs);
-    JComboBox<String> paymentSelect = new JComboBox<>(paymentTypes);
-    JComboBox<Integer> qtySelect = new JComboBox<>(quantities);
+    upcSelect = new JComboBox<String>(upcs);
+    paymentSelect = new JComboBox<>(paymentTypes);
+    qtySelect = new JComboBox<>(quantities);
     
     // Labels
-    name = new JLabel("Customer Name");
+    name = new JLabel("Customer:");
     product = new JLabel("Product");
     invoice = new JLabel("Invoice");
     UPC = new JLabel("UPC");
@@ -197,8 +196,40 @@ public class GUI extends JPanel {
     c.gridy = 8;
     add(pay, c); 
     
-    
-    
-    setPreferredSize(new Dimension(600, 400));
+    setPreferredSize(new Dimension(660, 400));
   }
+
+  public void showPost() {
+      JFrame post = new JFrame("POST Terminal");
+      post.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      this.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
+      post.add(this);
+      post.pack();
+      post.setVisible(true);
+  }
+
+   private class AddItemListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            // Perhaps this would be implemented in the backend
+            // Since we need to fetch the price and all from the record
+            int q = (Integer) qtySelect.getSelectedItem();
+            int p = q * 10; 
+            orders += "Item name" + "\t\t\t" +
+                       q + "\t" + 
+                      "10.00" + "\t" + p + "\n";
+            orderTotal += p;
+            total.setText("Total: $" + orderTotal);
+            cart.setText(orders);
+        }    
+   }
+   
+   private class PayListener implements ActionListener {
+       public void actionPerformed(ActionEvent e) {
+           // Again, this will likely call a function from the backend
+           orders = "";
+           cart.setText(orders);
+           total.setText("Total: $0");
+           payAmount.setText("000.00");
+       }
+   }
 }
