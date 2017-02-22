@@ -10,15 +10,15 @@ import javax.swing.*;
  *
  * @author tim
  */
-public class NetbeansPost {
+public class MainTest {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
 
-        GUI g = new GUI();
-        g.showPost();
+        GUI g = new GUI(new Store());
+//        g.showPost();
     }
     
 }
